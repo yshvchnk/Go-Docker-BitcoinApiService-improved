@@ -12,7 +12,7 @@
 
 ## About Project
 
-This is an API service using which you can:
+This is an API service that gives you an opportunity:
 
 -   get information about current bitcoin rate (UAH)
 -   subscribe your email on updates about changing bitcoin rate
