@@ -13,7 +13,6 @@ func HandleRate(w http.ResponseWriter, r *http.Request) { //w for sending answea
 		return
 	}
 
-	//here should be a request to bitcoin rate api
 	//getting bitcoin rate
 	rate, err := getBitcoinRate()
 	if err != nil {

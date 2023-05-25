@@ -6,11 +6,6 @@ import (
 	"net/http" //work with http
 )
 
-//struct with email field
-type Email struct {
-	Email string `json:"email"`
-}
-
 func main() {
 	//handlers for urls
 	http.HandleFunc("/api/rate", api.HandleRate)
