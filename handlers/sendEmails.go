@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-
 	"github.com/pkg/errors"
 )
 
@@ -26,22 +25,28 @@ func HandleSendEmails(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	successCount := 0
+	success := sendEmails(emails, rate)
+
+	if !success {
+		errMsg := fmt.Sprintf("Failed to send %d emails", len(emails))
+		http.Error(w, errMsg, http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func sendEmails(emails []string, rate float64) bool {
+	success := true
 
 	for _, email := range emails {
 		err := mail.SendEmail(email, rate)
 		if err != nil {
 			log.Printf("Failed to send email to %s: %v\n", email, err)
 		} else {
-			successCount++
+			success = false
 		}
 	}
 
-	if successCount < len(emails) {
-		errMsg := fmt.Sprintf("Failed to send %d emails", len(emails)-successCount)
-		http.Error(w, errMsg, http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
+	return success
 }

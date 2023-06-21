@@ -32,7 +32,6 @@ func SendEmail(email string, rate float64) error {
 		body + "\r\n",
 	)
 
-	//fmt.Printf("Sending email to %s: Bitcoin rate is %.2f UAH\n", email, rate)
 	err := smtp.SendMail(smtpHost+":"+smtpPort, smtp.PlainAuth("", smtpUsername, smtpPassword, smtpHost), from, []string{to}, message)
 	if err != nil {
 		log.Printf("Failed to send email to %s: %v\n", email, err)

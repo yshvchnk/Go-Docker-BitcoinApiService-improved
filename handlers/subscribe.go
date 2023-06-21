@@ -16,23 +16,31 @@ func HandleSubscribe(w http.ResponseWriter, r *http.Request) {
 
 	email := r.Form.Get("email")
 
-	subscribed, err := files.IsEmailSubscribed(email)
+	err = subscribeEmail(email)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintln(w, "Email added")
+}
+
+func subscribeEmail(email string) error {
+
+	subscribed, err := files.IsEmailSubscribed(email)
+	if err != nil {
+		return fmt.Errorf("failed to check subscription: %v", err)
+	}
+
 	if subscribed {
-		http.Error(w, "Email already subscribed", http.StatusConflict)
-		return
+		return fmt.Errorf("email already subscribed")
 	}
 
 	err = files.SaveEmailToFile(email)
 	if err != nil {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
+		return fmt.Errorf("failed to save email: %v", err)
 	}
 
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintln(w, "Email added")
+	return nil
 }

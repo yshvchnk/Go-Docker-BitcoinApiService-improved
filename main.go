@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-
 	"github.com/go-chi/chi"
 	"github.com/joho/godotenv"
 )
@@ -29,6 +28,5 @@ func main() {
 	serverErr := http.ListenAndServe(":"+port, router)
 	if serverErr != nil {
 		log.Fatal(serverErr)
-		os.Exit(1)
 	}
 }
