@@ -14,16 +14,16 @@
 
 This is an API service that gives you an opportunity:
 
--   get information about current bitcoin rate (UAH)
--   subscribe your email on updates about changing bitcoin rate
--   send all the subscribed emails current bitcoin rate
+- get information about current bitcoin rate (UAH)
+- subscribe your email on updates about changing bitcoin rate
+- send all the subscribed emails current bitcoin rate
 
 Additional info:
 
--   Service production was guided by [this document](https://github.com/AndriiPopovych/gses/blob/main/gses2swagger.yaml).
-    For convenient reading use [Swagger](https://editor.swagger.io/.)
--   All data for app is stored in json-file (don't use databases)
--   Package includes Dockerfile, so you can start system in Docker
+- Service production was guided by [this document](https://github.com/AndriiPopovych/gses/blob/main/gses2swagger.yaml).
+  For convenient reading use [Swagger](https://editor.swagger.io/.)
+- All data for app is stored in json-file (don't use databases)
+- Package includes Dockerfile, so you can start system in Docker
 
 ## Screenshots
 
@@ -31,8 +31,8 @@ Additional info:
 
 ## Technologies Used
 
--   Go lang
--   Docker
+- Go lang
+- Docker
 
 ## Prerequisites
 
@@ -56,9 +56,9 @@ To get started with this project, follow the steps below:
 5. Use commands for testing API:\
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; `curl http://localhost:8080/api/rate`
 
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; `curl -X POST -d "email=example@example.com" http://localhost:8080/api/subscribe`
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; `curl -X POST -d "email=example@example.com" http://localhost:8080/api/subscribe`
 
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; `curl -X POST http://localhost:8080/api/sendEmails`
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; `curl -X POST http://localhost:8080/api/sendEmails`
 
 ## Usage
 
@@ -66,12 +66,12 @@ You can make get and post request using routes:
 
 GET request:
 
--   `/api/rate` - get bitcoin rate
+- `/api/rate` - get bitcoin rate
 
 POST requests:
 
--   `/api/subscribe` - subscribe on bitcoin updates
--   `/api/sendEmails` - send emails with current bitcoin rate to all subscribers
+- `/api/subscribe` - subscribe on bitcoin updates
+- `/api/sendEmails` - send emails with current bitcoin rate to all subscribers
 
 ## Acknowledgments
 

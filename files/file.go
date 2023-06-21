@@ -2,44 +2,60 @@ package files
 
 import (
 	"encoding/json"
+	"log"
 	"os"
+
+	"github.com/joho/godotenv"
+	"github.com/pkg/errors"
 )
 
-//func for checking subscription
-func IsEmailSubscribed(email string) bool {
-	// read emails from file
-	emails, err := GetEmailsFromFile()
+var storage string
+
+func init() {
+	err := LoadEnv()
 	if err != nil {
-		return false
+		log.Fatal("Error loading .env file:", err)
+	}
+}
+
+func LoadEnv() error {
+	err := godotenv.Load()
+	if err != nil {
+		return errors.Wrap(err, "Error loading .env file")
 	}
 
-	//check if email exists in emails
+	storage = os.Getenv("STORAGE")
+	return nil
+}
+
+func IsEmailSubscribed(email string) (bool, error) {
+	emails, err := GetEmailsFromFile()
+	if err != nil {
+		return false, errors.Wrap(err, "Failed to load email addresses")
+	}
+
 	for _, e := range emails {
 		if e == email {
-			return true
+			return true, nil
 		}
 	}
 
-	return false
+	return false, nil
 }
 
-//func for saving emails
 func SaveEmailToFile(email string) error {
-	// read emails from file
 	emails, err := GetEmailsFromFile()
 	if err != nil {
 		emails = []string{}
 	}
 
-	//add email and serialize into json
 	emails = append(emails, email)
 	data, err := json.Marshal(emails)
 	if err != nil {
 		return err
 	}
 
-	//write data into file
-	err = os.WriteFile("emails.json", data, 0644)
+	err = os.WriteFile(storage, data, 0644)
 	if err != nil {
 		return err
 	}
@@ -48,13 +64,12 @@ func SaveEmailToFile(email string) error {
 }
 
 func GetEmailsFromFile() ([]string, error) {
-	//read emails from file
-	data, err := os.ReadFile("emails.json")
+
+	data, err := os.ReadFile(storage)
 	if err != nil {
 		return nil, err
 	}
 
-	//deserialize data from file into slice
 	var emails []string
 	err = json.Unmarshal(data, &emails)
 	if err != nil {
