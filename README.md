@@ -27,7 +27,7 @@ Additional info:
 
 ## Screenshots
 
-![bitcoin-app_01](./screenshots/bitcoin-api_01.png)
+![bitcoin-app_01](./screenshot/bitcoin-api_01.png)
 
 ## Technologies Used
 

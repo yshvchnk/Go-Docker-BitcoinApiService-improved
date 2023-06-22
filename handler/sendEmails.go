@@ -1,11 +1,9 @@
-package handlers
+package handler
 
 import (
-	"bitcoin-app/files"
-	"bitcoin-app/mail"
+	"bitcoin-app/file"
 	"bitcoin-app/service"
 	"fmt"
-	"log"
 	"net/http"
 	"github.com/pkg/errors"
 )
@@ -18,14 +16,14 @@ func HandleSendEmails(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	emails, err := files.GetEmailsFromFile()
+	emails, err := file.GetEmailsFromFile()
 	if err != nil {
 		err := errors.Wrap(err, "Failed to load email addresses")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	success := sendEmails(emails, rate)
+	success := service.SendEmails(emails, rate)
 
 	if !success {
 		errMsg := fmt.Sprintf("Failed to send %d emails", len(emails))
@@ -36,17 +34,3 @@ func HandleSendEmails(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func sendEmails(emails []string, rate float64) bool {
-	success := true
-
-	for _, email := range emails {
-		err := mail.SendEmail(email, rate)
-		if err != nil {
-			log.Printf("Failed to send email to %s: %v\n", email, err)
-		} else {
-			success = false
-		}
-	}
-
-	return success
-}

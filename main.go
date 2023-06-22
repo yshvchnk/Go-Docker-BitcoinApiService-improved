@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bitcoin-app/handlers"
+	"bitcoin-app/handler"
 	"log"
 	"net/http"
 	"os"
@@ -19,9 +19,9 @@ func main() {
 
 	router := chi.NewRouter()
 
-	router.Get("/api/rate", handlers.HandleRate)
-	router.Post("/api/subscribe", handlers.HandleSubscribe)
-	router.Post("/api/sendEmails", handlers.HandleSendEmails)
+	router.Get("/api/rate", handler.HandleRate)
+	router.Post("/api/subscribe", handler.HandleSubscribe)
+	router.Post("/api/sendEmails", handler.HandleSendEmails)
 
 	log.Println("Server started on port", port)
 
