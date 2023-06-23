@@ -19,9 +19,15 @@ func main() {
 
 	router := chi.NewRouter()
 
+	storagePath := "../emails.json"
+	emailHandler, err := handler.NewEmailHandler(storagePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	router.Get("/api/rate", handler.HandleRate)
 	router.Post("/api/subscribe", handler.HandleSubscribe)
-	router.Post("/api/sendEmails", handler.HandleSendEmails)
+	router.Post("/api/sendEmails", emailHandler.HandleSendEmails)
 
 	log.Println("Server started on port", port)
 

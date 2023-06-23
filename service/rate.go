@@ -10,6 +10,12 @@ import (
 	"github.com/joho/godotenv"
 )
 
+type BitcoinResponse struct {
+	Bitcoin struct {
+		UAH float64 `json:"uah"`
+	} `json:"bitcoin"`
+}
+
 func GetBitcoinRate() (float64, error) {
 	err := godotenv.Load()
 	if err != nil {
@@ -33,15 +39,15 @@ func GetBitcoinRate() (float64, error) {
 		return 0, fmt.Errorf("couldn't get a response from the API, status code: %d", resp.StatusCode)
 	}
 
-	var data map[string]map[string]float64
+	var data BitcoinResponse
 
 	err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
 		return 0, err
 	}
 
-	rate, ok := data["bitcoin"]["uah"]
-	if !ok {
+	rate := data.Bitcoin.UAH
+	if rate == 0 {
 		return 0, errors.New("failed to retrieve the rate for the bitcoin")
 	}
 

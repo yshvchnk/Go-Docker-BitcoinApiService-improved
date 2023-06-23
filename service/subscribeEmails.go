@@ -2,23 +2,36 @@ package service
 
 import (
 	"bitcoin-app/file"
+	"errors"
 	"fmt"
+	"log"
+)
+
+var (
+	ErrSubscriptionCheckFailed = errors.New("subscription check failed")
+	ErrEmailAlreadySubscribed  = errors.New("email already subscribed")
+	ErrFailedToSaveEmail       = errors.New("failed to save email")
 )
 
 func SubscribeEmail(email string) error {
 
-	subscribed, err := file.IsEmailSubscribed(email)
+	es, err := file.NewEmailStorage("../emails.json")
 	if err != nil {
-		return fmt.Errorf("failed to check subscription: %v", err)
+			log.Fatal(err)
+	}
+
+	subscribed, err := es.IsEmailSubscribed(email)
+	if err != nil {
+		return fmt.Errorf("failed to check subscription: %s: %s", ErrSubscriptionCheckFailed, err.Error())
 	}
 
 	if subscribed {
-		return fmt.Errorf("email already subscribed")
+		return ErrEmailAlreadySubscribed
 	}
 
-	err = file.SaveEmailToFile(email)
+	err = es.SaveEmailToFile(email)
 	if err != nil {
-		return fmt.Errorf("failed to save email: %v", err)
+		return fmt.Errorf("failed to save email: %s: %s", ErrFailedToSaveEmail, err.Error())
 	}
 
 	return nil

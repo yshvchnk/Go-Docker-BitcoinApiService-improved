@@ -2,33 +2,41 @@ package file
 
 import (
 	"encoding/json"
-	"log"
 	"os"
 	"github.com/joho/godotenv"
 	"github.com/pkg/errors"
 )
 
-var storage string
-
-func init() {
-	err := LoadEnv()
-	if err != nil {
-		log.Fatal("Error loading .env file:", err)
-	}
+type EmailStorage struct {
+	StoragePath string
 }
 
-func LoadEnv() error {
+func NewEmailStorage(storagePath string) (*EmailStorage, error) {
+	es := &EmailStorage{
+		StoragePath: storagePath,
+	}
+
+	err := es.LoadEnv()
+	if err != nil {
+		return nil, err
+	}
+
+	return es, nil
+}
+
+
+func (es *EmailStorage) LoadEnv() error {
 	err := godotenv.Load()
 	if err != nil {
 		return errors.Wrap(err, "Error loading .env file")
 	}
 
-	storage = os.Getenv("STORAGE")
+	es.StoragePath = os.Getenv("STORAGE")
 	return nil
 }
 
-func IsEmailSubscribed(email string) (bool, error) {
-	emails, err := GetEmailsFromFile()
+func (es *EmailStorage) IsEmailSubscribed(email string) (bool, error) {
+	emails, err := es.GetEmailsFromFile()
 	if err != nil {
 		return false, errors.Wrap(err, "Failed to load email addresses")
 	}
@@ -42,8 +50,8 @@ func IsEmailSubscribed(email string) (bool, error) {
 	return false, nil
 }
 
-func SaveEmailToFile(email string) error {
-	emails, err := GetEmailsFromFile()
+func (es *EmailStorage) SaveEmailToFile(email string) error {
+	emails, err := es.GetEmailsFromFile()
 	if err != nil {
 		emails = []string{}
 	}
@@ -54,7 +62,7 @@ func SaveEmailToFile(email string) error {
 		return err
 	}
 
-	err = os.WriteFile(storage, data, 0644)
+	err = os.WriteFile(es.StoragePath, data, 0644)
 	if err != nil {
 		return err
 	}
@@ -62,9 +70,8 @@ func SaveEmailToFile(email string) error {
 	return nil
 }
 
-func GetEmailsFromFile() ([]string, error) {
-
-	data, err := os.ReadFile(storage)
+func (es *EmailStorage) GetEmailsFromFile() ([]string, error) {
+	data, err := os.ReadFile(es.StoragePath)
 	if err != nil {
 		return nil, err
 	}
