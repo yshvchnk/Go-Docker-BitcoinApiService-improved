@@ -3,9 +3,9 @@ package test
 import (
 	"bitcoin-app/file"
 	"bitcoin-app/service"
-	"bitcoin-app/tests"
-	"testing"
+	test "bitcoin-app/tests"
 	"log"
+	"testing"
 )
 
 func TestServiceAndDatabase(t *testing.T) {

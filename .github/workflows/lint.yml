@@ -27,3 +27,6 @@ jobs:
         with:
           version: v1.53
           args: --timeout=5m
+
+      - name: Fix Issues
+        run: golangci-lint run --fix --out-format=github-actions --timeout=5m
