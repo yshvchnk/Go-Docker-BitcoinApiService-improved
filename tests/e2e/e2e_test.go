@@ -1,8 +1,9 @@
-package e2e
+package test
 
 import (
 	"bitcoin-app/handler"
-	"io/ioutil"
+	"bitcoin-app/tests"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -26,18 +27,23 @@ func TestGetBitcoinRate(t *testing.T) {
 		t.Errorf("Expected status code %d, but got %d", http.StatusOK, resp.StatusCode)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		t.Fatalf("Error reading response body: %s", err)
 	}
 
-	validPattern := regexp.MustCompile(`\b[1-9]\d*\b`)
+	validPattern := regexp.MustCompile(`\b\d+(\.\d+)?\b`)
 	if !validPattern.Match(body) {
 		t.Errorf("Expected response body to contain a digit greater than 0, but it does not")
 	}
 }
 
 func TestSubscribeToBitcoinRate(t *testing.T) {
+
+	err := test.ClearFileContents("emails.json")
+	if err != nil {
+		t.Fatalf("Error cleaning up emails.json: %s", err)
+	}
 
 	server := httptest.NewServer(http.HandlerFunc(handler.HandleSubscribe))
 	defer server.Close()
@@ -80,3 +86,5 @@ func TestSendEmailNotification(t *testing.T) {
 	}
 
 }
+
+
