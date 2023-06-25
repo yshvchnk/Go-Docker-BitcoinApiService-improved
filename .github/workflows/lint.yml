@@ -23,10 +23,7 @@ jobs:
         run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.53.3
 
       - name: Run Linter
-        uses: golangci/golangci-lint-action@v3
-        with:
-          version: v1.53
-          args: --timeout=5m
+        run: golangci-lint run
 
       - name: Fix Issues
         run: golangci-lint run --fix --out-format=github-actions --timeout=5m

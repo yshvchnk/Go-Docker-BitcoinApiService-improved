@@ -3,7 +3,7 @@ package test
 import (
 	"bitcoin-app/file"
 	"bitcoin-app/service"
-	test "bitcoin-app/tests"
+	"bitcoin-app/tests"
 	"log"
 	"testing"
 )

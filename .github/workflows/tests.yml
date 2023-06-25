@@ -24,4 +24,4 @@ jobs:
           cache: false
 
       - name: Run tests
-        run: go test -v ./test/integration/integration_test
+        run: go test -v ./tests/integration/integration_test
