@@ -1,4 +1,4 @@
-package service_test
+package unit
 
 import (
 	"bitcoin-app/service"
@@ -21,7 +21,6 @@ func TestMain(m *testing.M) {
 	os.Exit(exitCode)
 }
 
-//tests the successful scenario where the API responds with the expected rate
 func TestGetBitcoinRate_Success(t *testing.T) {
 	mockAPI := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`{
@@ -48,7 +47,6 @@ func TestGetBitcoinRate_Success(t *testing.T) {
 	}
 }
 
-// tests the case where the API returns an error response with a non-OK status code. 
 func TestGetBitcoinRate_APIError(t *testing.T) {
 	mockAPI := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -73,7 +71,6 @@ func TestGetBitcoinRate_APIError(t *testing.T) {
 	}
 }
 
-//tests the scenario where the API response doesn't contain the expected rate
 func TestGetBitcoinRate_RateNotFound(t *testing.T) {
 	mockAPI := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`{
