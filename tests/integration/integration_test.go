@@ -1,7 +1,7 @@
 package test
 
 import (
-	"bitcoin-app/file"
+	"bitcoin-app/store"
 	"bitcoin-app/service"
 	"bitcoin-app/tests"
 	"log"
@@ -21,7 +21,7 @@ func TestServiceAndDatabase(t *testing.T) {
 		t.Errorf("unexpected error: %v", err)
 	}
 
-	es, err := file.NewEmailStorage("emails.json")
+	es, err := store.NewEmailStorage("emails.json")
 	if err != nil {
 			log.Fatal(err)
 	}

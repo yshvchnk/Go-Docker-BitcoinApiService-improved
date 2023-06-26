@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"bitcoin-app/file"
+	"bitcoin-app/store"
 	"bitcoin-app/service"
 	"fmt"
 	"net/http"
@@ -9,7 +9,7 @@ import (
 )
 
 type EmailHandler struct {
-	EmailStorage file.EmailStorage
+	EmailStorage store.EmailStorage
 	BitcoinRate  BitcoinRateProvider
 }
 
@@ -18,7 +18,7 @@ type BitcoinRateProvider interface {
 }
 
 func NewEmailHandler(storagePath string) (*EmailHandler, error) {
-	storage, err := file.NewEmailStorage(storagePath)
+	storage, err := store.NewEmailStorage(storagePath)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create email storage")
 	}

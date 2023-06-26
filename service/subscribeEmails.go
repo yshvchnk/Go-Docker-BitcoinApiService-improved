@@ -1,7 +1,7 @@
 package service
 
 import (
-	"bitcoin-app/file"
+	"bitcoin-app/store"
 	"errors"
 	"fmt"
 	"log"
@@ -15,7 +15,7 @@ var (
 
 func SubscribeEmail(email string) error {
 
-	es, err := file.NewEmailStorage("../emails.json")
+	es, err := store.NewEmailStorage("../emails.json")
 	if err != nil {
 			log.Fatal(err)
 	}
