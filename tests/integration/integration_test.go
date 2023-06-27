@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestServiceAndDatabase(t *testing.T) {
+func TestServiceAndDatabaseWillReturnSuccess(t *testing.T) {
 
 	err := test.ClearFileContents("emails.json")
 	if err != nil {
