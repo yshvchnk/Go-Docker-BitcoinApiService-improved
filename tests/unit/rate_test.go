@@ -21,7 +21,7 @@ func TestMain(m *testing.M) {
 	os.Exit(exitCode)
 }
 
-func TestGetBitcoinRate_Success(t *testing.T) {
+func TestGetBitcoinRateWillReturnSuccess(t *testing.T) {
 	mockAPI := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`{
 			"bitcoin": {
@@ -47,7 +47,7 @@ func TestGetBitcoinRate_Success(t *testing.T) {
 	}
 }
 
-func TestGetBitcoinRate_APIError(t *testing.T) {
+func TestGetBitcoinRateWillReturnAPIError(t *testing.T) {
 	mockAPI := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}))
@@ -71,7 +71,7 @@ func TestGetBitcoinRate_APIError(t *testing.T) {
 	}
 }
 
-func TestGetBitcoinRate_RateNotFound(t *testing.T) {
+func TestGetBitcoinRateWillReturnRateNotFound(t *testing.T) {
 	mockAPI := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`{
 			"bitcoin": {

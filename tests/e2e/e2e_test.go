@@ -12,7 +12,7 @@ import (
 	"testing"
 )
 
-func TestGetBitcoinRate(t *testing.T) {
+func TestGetBitcoinRateWillReturnSuccess(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(handler.HandleRate))
 	defer server.Close()
 
@@ -38,7 +38,7 @@ func TestGetBitcoinRate(t *testing.T) {
 	}
 }
 
-func TestSubscribeToBitcoinRate(t *testing.T) {
+func TestSubscribeToBitcoinRateWillReturnSuccess(t *testing.T) {
 
 	err := test.ClearFileContents("emails.json")
 	if err != nil {
@@ -65,7 +65,7 @@ func TestSubscribeToBitcoinRate(t *testing.T) {
 
 }
 
-func TestSendEmailNotification(t *testing.T) {
+func TestSendEmailNotificationWillReturnSuccess(t *testing.T) {
 
 	emailHandler, err := handler.NewEmailHandler("emails.json")
 	if err != nil {
