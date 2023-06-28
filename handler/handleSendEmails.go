@@ -11,20 +11,25 @@ import (
 type EmailHandler struct {
 	EmailStorage store.EmailStorage
 	BitcoinRate  BitcoinRateProvider
+	EmailService *service.EmailSenderDetails
 }
 
 type BitcoinRateProvider interface {
 	GetBitcoinRate() (float64, error)
 }
 
-func NewEmailHandler(storagePath string) (*EmailHandler, error) {
+func NewEmailHandler(storagePath string, rateProvider BitcoinRateProvider) (*EmailHandler, error) {
 	storage, err := store.NewEmailStorage(storagePath)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create email storage")
 	}
 
+	emailSender := service.NewEmailSenderDetails(storage)
+
 	handler := &EmailHandler{
 		EmailStorage: *storage,
+		BitcoinRate:  rateProvider,
+		EmailService: emailSender,
 	}
 
 	return handler, nil
@@ -44,7 +49,7 @@ func (h *EmailHandler) HandleSendEmails(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	success := service.SendEmails(emails, rate)
+	success := h.EmailService.SendEmails(emails, rate)
 
 	if !success {
 		errMsg := fmt.Sprintf("Failed to send %d emails", len(emails))

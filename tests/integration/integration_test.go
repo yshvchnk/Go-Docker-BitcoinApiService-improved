@@ -4,7 +4,6 @@ import (
 	"bitcoin-app/store"
 	"bitcoin-app/service"
 	"bitcoin-app/tests"
-	"log"
 	"testing"
 )
 
@@ -17,13 +16,16 @@ func TestServiceAndDatabaseWillReturnSuccess(t *testing.T) {
 
 	testEmail := "test2@example.com"
 
-	if err := service.SubscribeEmail(testEmail); err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
 	es, err := store.NewEmailStorage("emails.json")
 	if err != nil {
-			log.Fatal(err)
+			t.Fatal(err)
+	}
+
+	emailService := service.NewEmailService(es)
+
+	err = emailService.SubscribeEmail(testEmail)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
 	}
 
 	subscribed, err := es.IsEmailSubscribed(testEmail);

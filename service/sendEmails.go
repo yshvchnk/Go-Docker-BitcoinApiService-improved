@@ -5,7 +5,21 @@ import (
 	"log"
 )
 
-func SendEmails(emails []string, rate float64) bool {
+type EmailSender interface {
+	SendEmail(email string, rate float64) error
+}
+
+type EmailSenderDetails struct {
+	Sender EmailSender
+}
+
+func NewEmailSenderDetails(sender EmailSender) *EmailSenderDetails {
+	return &EmailSenderDetails{
+		Sender: sender,
+	}
+}
+
+func (es *EmailSenderDetails) SendEmails(emails []string, rate float64) bool {
 	success := true
 
 	for _, email := range emails {

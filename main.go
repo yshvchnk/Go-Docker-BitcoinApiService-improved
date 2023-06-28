@@ -2,12 +2,15 @@ package main
 
 import (
 	"bitcoin-app/handler"
+	"bitcoin-app/service"
 	"log"
 	"net/http"
 	"os"
 	"github.com/go-chi/chi"
 	"github.com/joho/godotenv"
 )
+
+const storagePath = "../emails.json"
 
 func main() {
 	err := godotenv.Load()
@@ -19,13 +22,16 @@ func main() {
 
 	router := chi.NewRouter()
 
-	storagePath := "../emails.json"
-	emailHandler, err := handler.NewEmailHandler(storagePath)
+	bitcoinAPI := service.NewCoinGeckoAPI()
+
+	bitcoinRateHandler := handler.NewBitcoinRateHandler(bitcoinAPI)
+
+	emailHandler, err := handler.NewEmailHandler(storagePath, bitcoinAPI)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	router.Get("/api/rate", handler.HandleRate)
+	router.Get("/api/rate", bitcoinRateHandler.HandleRate)
 	router.Post("/api/subscribe", handler.HandleSubscribe)
 	router.Post("/api/sendEmails", emailHandler.HandleSendEmails)
 
