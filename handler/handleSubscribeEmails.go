@@ -2,13 +2,11 @@ package handler
 
 import (
 	"bitcoin-app/service"
-	"bitcoin-app/store"
 	"errors"
 	"fmt"
 	"net/http"
 )
 
-const emailStoragePath = "../emails.json"
 
 func HandleSubscribe(w http.ResponseWriter, r *http.Request) {
 
@@ -20,13 +18,7 @@ func HandleSubscribe(w http.ResponseWriter, r *http.Request) {
 
 	email := r.Form.Get("email")
 
-	es, err := store.NewEmailStorage(emailStoragePath)
-	if err != nil {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-
-	emailService := service.NewEmailService(es)
+	emailService := service.NewEmailService()
 
 	err = emailService.SubscribeEmail(email)
 	if err != nil {

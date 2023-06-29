@@ -21,7 +21,7 @@ func TestServiceAndDatabaseWillReturnSuccess(t *testing.T) {
 			t.Fatal(err)
 	}
 
-	emailService := service.NewEmailService(es)
+	emailService := service.NewEmailService()
 
 	err = emailService.SubscribeEmail(testEmail)
 	if err != nil {

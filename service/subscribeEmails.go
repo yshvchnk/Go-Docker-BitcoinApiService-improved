@@ -1,10 +1,9 @@
 package service
 
 import (
-	// "bitcoin-app/store"
+	"bitcoin-app/store"
 	"errors"
 	"fmt"
-	// "log"
 )
 
 var (
@@ -12,8 +11,6 @@ var (
 	ErrEmailAlreadySubscribed  = errors.New("email already subscribed")
 	ErrFailedToSaveEmail       = errors.New("failed to save email")
 )
-
-const emailStoragePath = "../emails.json"
 
 type EmailStorage interface {
 	IsEmailSubscribed(email string) (bool, error)
@@ -24,7 +21,9 @@ type EmailService struct {
 	storage EmailStorage
 }
 
-func NewEmailService(storage EmailStorage) *EmailService {
+func NewEmailService() *EmailService {
+	storagePath := "../emails.json"
+	storage, _ := store.NewEmailStorage(storagePath)
 	return &EmailService{
 		storage: storage,
 	}

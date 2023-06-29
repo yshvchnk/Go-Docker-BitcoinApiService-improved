@@ -6,16 +6,17 @@ import (
 )
 
 type EmailSender interface {
-	SendEmail(email string, rate float64) error
+	SendEmail(email string, rate float64) bool
+	GetBitcoinRate() (float64, error)
 }
 
 type EmailSenderDetails struct {
-	Sender EmailSender
+	StoragePath string
 }
 
-func NewEmailSenderDetails(sender EmailSender) *EmailSenderDetails {
+func NewEmailSenderDetails(storagePath string) *EmailSenderDetails {
 	return &EmailSenderDetails{
-		Sender: sender,
+		StoragePath: storagePath,
 	}
 }
 

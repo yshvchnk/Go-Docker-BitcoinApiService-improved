@@ -12,6 +12,31 @@ import (
 
 const storagePath = "../emails.json"
 
+type EmailSender struct {
+	StoragePath string
+}
+
+func (s *EmailSender) SendEmails(emails []string, rate float64) bool {
+	emailService := service.NewEmailSenderDetails(s.StoragePath)
+	return emailService.SendEmails(emails, rate)
+}
+
+func (s *EmailSender) GetBitcoinRate() (float64, error) {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	coinGeckoAPI := service.NewCoinGeckoAPI()
+
+	rate, err := coinGeckoAPI.GetBitcoinRate()
+	if err != nil {
+		return 0.0, err
+	}
+
+	return rate, nil
+}
+
 func main() {
 	err := godotenv.Load()
 	if err != nil {
@@ -26,7 +51,11 @@ func main() {
 
 	bitcoinRateHandler := handler.NewBitcoinRateHandler(bitcoinAPI)
 
-	emailHandler, err := handler.NewEmailHandler(storagePath, bitcoinAPI)
+	emailSender := &EmailSender{
+		StoragePath: storagePath,
+	}
+
+	emailHandler, err := handler.NewEmailHandler(storagePath, bitcoinAPI, emailSender)
 	if err != nil {
 		log.Fatal(err)
 	}
