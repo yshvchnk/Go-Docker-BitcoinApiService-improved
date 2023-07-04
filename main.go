@@ -1,12 +1,12 @@
 package main
 
 import (
-	rateCurrencyHandler "bitcoin-app/handler/handleCurrencyRate"
-	sendEmailsHandler "bitcoin-app/handler/handleSendEmails"
-	subscribeEmailsHandler "bitcoin-app/handler/handleSubscribeEmails"
-	currencyRateGet "bitcoin-app/service/getCurrencyRate"
-	emailSend "bitcoin-app/service/sendEmails"
-	"bitcoin-app/utils"
+	"bitcoin-app/env"
+	"bitcoin-app/handler"
+	"bitcoin-app/store"
+	rate "bitcoin-app/service/rate"
+	send "bitcoin-app/service/send"
+	subscribe "bitcoin-app/service/subscribe"
 	"log"
 	"net/http"
 	"os"
@@ -16,27 +16,36 @@ import (
 const storagePath = "../emails.json"
 
 func main() {
-	utils.LoadEnv()
+	env.LoadEnv()
 
 	port := os.Getenv("PORT")
 
 	router := chi.NewRouter()
 
-	currencyAPI := currencyRateGet.NewCurrencyAPIProvider()
+	currencyAPI := rate.NewCurrencyAPIProvider()
 
-	currencyRateHandler := rateCurrencyHandler.NewCurrencyRateHandler(currencyAPI)
+	currencyRateHandler := handler.NewCurrencyRateHandler(currencyAPI)
 
-	emailSender := &emailSend.EmailSenderPath{
-		StoragePath: storagePath,
-	}
-
-	emailHandler, err := sendEmailsHandler.NewEmailSendHandler(storagePath, currencyAPI, emailSender)
+	emailStorage, err := store.NewEmailStorage(storagePath)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	emailSender := &send.EmailSenderPath{
+		StoragePath: storagePath,
+	}
+
+	emailHandler, err := handler.NewEmailSendHandler(*emailStorage, emailSender)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	emailServiceSubscribe := subscribe.NewEmailServiceSubscribe()
+
 	router.Get("/api/rate", currencyRateHandler.HandleCurrencyRate)
-	router.Post("/api/subscribe", subscribeEmailsHandler.HandleSubscribeEmails)
+	router.Post("/api/subscribe", func(w http.ResponseWriter, r *http.Request) {
+		handler.HandleSubscribeEmails(w, r, emailServiceSubscribe)
+	})
 	router.Post("/api/sendEmails", emailHandler.HandleSendEmails)
 
 	log.Println("Server started on port", port)

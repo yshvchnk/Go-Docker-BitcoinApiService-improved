@@ -3,14 +3,17 @@ package service
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 )
 
-func RetrieveAndDecodeFromAPI(url string, response interface{}) (float64, error) {
+type CurrencyProviderResponse interface {
+	GetCurrencyRate() float64
+}
+
+func RetrieveAndDecodeFromAPI(url string, response CurrencyProviderResponse) (float64, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		return 0, err
@@ -33,17 +36,6 @@ func RetrieveAndDecodeFromAPI(url string, response interface{}) (float64, error)
 		return 0, err
 	}
 
-	switch r := response.(type) {
-		case *CoinGeckoResponse:
-			log.Printf("CoinGecko - Response: %s", body)
-			return r.Currency.UAH, nil
-		case *CryptoCompareResponse:
-			log.Printf("CryptoCompare - Response: %s", body)
-			return r.UAH, nil
-		case *CoinPaprikaResponse:
-			log.Printf("CoinPaprika - Response: %s", body)
-			return r.UAH, nil
-		default:
-			return 0, errors.New("unsupported response type")
-	}
+	log.Printf("%T - Response: %s", response, body)
+	return response.GetCurrencyRate(), nil
 }

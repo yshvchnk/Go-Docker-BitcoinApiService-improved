@@ -2,23 +2,21 @@ package handler
 
 import (
 	"bitcoin-app/store"
-	"bitcoin-app/service/sendEmails"
+	"bitcoin-app/service/send"
 	"net/http"
-	"github.com/pkg/errors"
 )
 
 type EmailSendHandler struct {
 	EmailService *service.EmailSendService
 }
 
-func NewEmailSendHandler(storagePath string, rateProvider CurrencyRateProvider,emailSender service.EmailSender) (*EmailSendHandler, error) {
-	storage, err := store.NewEmailStorage(storagePath)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to create email storage")
-	}
+type EmailStorage interface {
+	SendEmails() error
+}
 
+func NewEmailSendHandler(emailStorage store.EmailStorage, emailSender service.EmailSender) (*EmailSendHandler, error) {
 	emailService := &service.EmailSendService{
-		Storage: *storage,
+		Storage: emailStorage,
 		Sender:  emailSender,
 	}
 

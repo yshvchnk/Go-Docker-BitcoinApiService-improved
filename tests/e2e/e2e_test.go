@@ -1,11 +1,11 @@
 package test
 
 import (
-	currencyHandler "bitcoin-app/handler/handleCurrencyRate"
-	subscribeHandler "bitcoin-app/handler/handleSubscribeEmails"
-	sendEmailsHandler "bitcoin-app/handler/handleSendEmails"
-	currencyRateGet "bitcoin-app/service/getCurrencyRate"
-	emailSend "bitcoin-app/service/sendEmails"
+	"bitcoin-app/handler"
+	"bitcoin-app/store"
+	rate "bitcoin-app/service/rate"
+	send "bitcoin-app/service/send"
+	subscribe "bitcoin-app/service/subscribe"
 	test "bitcoin-app/tests"
 	"io"
 	"net/http"
@@ -20,9 +20,9 @@ import (
 const storagePath = "emails.json"
 
 func TestGetBitcoinRateWillReturnSuccess(t *testing.T) {
-	bitcoinAPI := currencyRateGet.NewCurrencyAPIProvider()
+	bitcoinAPI := rate.NewCurrencyAPIProvider()
 
-	bitcoinRateHandler := currencyHandler.NewCurrencyRateHandler(bitcoinAPI)
+	bitcoinRateHandler := handler.NewCurrencyRateHandler(bitcoinAPI)
 
 	server := httptest.NewServer(http.HandlerFunc(bitcoinRateHandler.HandleCurrencyRate))
 	defer server.Close()
@@ -56,7 +56,11 @@ func TestSubscribeToBitcoinRateWillReturnSuccess(t *testing.T) {
 		t.Fatalf("Error cleaning up emails.json: %s", err)
 	}
 
-	server := httptest.NewServer(http.HandlerFunc(subscribeHandler.HandleSubscribeEmails))
+	emailServiceSubscribe := subscribe.NewEmailServiceSubscribe()
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		handler.HandleSubscribeEmails(w, r, emailServiceSubscribe)
+	}))
 	defer server.Close()
 
 	formData := url.Values{}
@@ -77,13 +81,16 @@ func TestSubscribeToBitcoinRateWillReturnSuccess(t *testing.T) {
 }
 
 func TestSendEmailNotificationWillReturnSuccess(t *testing.T) {
-	bitcoinAPI := currencyRateGet.NewCurrencyAPIProvider()
-
-	emailSender := &emailSend.EmailSenderPath{
+	emailSender := &send.EmailSenderPath{
 		StoragePath: storagePath,
 	}
 
-	emailHandler, err := sendEmailsHandler.NewEmailSendHandler(storagePath, bitcoinAPI, emailSender)
+	emailStorage, err := store.NewEmailStorage(storagePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	emailHandler, err := handler.NewEmailSendHandler(*emailStorage, emailSender)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -102,5 +109,3 @@ func TestSendEmailNotificationWillReturnSuccess(t *testing.T) {
 	}
 
 }
-
-

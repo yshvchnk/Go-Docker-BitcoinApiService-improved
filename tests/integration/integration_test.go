@@ -1,9 +1,9 @@
 package test
 
 import (
+	service "bitcoin-app/service/subscribe"
 	"bitcoin-app/store"
-	"bitcoin-app/service/subscribeEmails"
-	"bitcoin-app/tests"
+	test "bitcoin-app/tests"
 	"testing"
 )
 
