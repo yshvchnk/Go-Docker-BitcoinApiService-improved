@@ -1,4 +1,4 @@
-# Go-Docker-BitcoinApiService
+# Go-Docker-BitcoinApiService(improved)
 
 ## Table of content
 
@@ -27,7 +27,13 @@ Additional info:
 
 ## Screenshots
 
+Docker
+
 ![bitcoin-app_01](./screenshot/bitcoin-api_01.png)
+
+Application architecture
+
+![bitcoin-app_02](./docs/Bitcoin_app_arch_diagram.jpg)
 
 ## Technologies Used
 
@@ -48,7 +54,7 @@ To get started with this project, follow the steps below:
 2. Navigate to the project directory:\
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; `cd Go-Docker-BitcoinApiService`
 
-3. Input your email credentials into file `mail.go`
+3. Input your email credentials
 
 4. Create a Docker image:\
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; `docker build -t bitcoin-app .`
@@ -75,4 +81,10 @@ POST requests:
 
 ## Acknowledgments
 
-This project is using [CoinGecko API](https://www.coingecko.com/en/api)
+This project is using three APIs:
+
+- [CoinGecko API](https://www.coingecko.com/en/api)
+- [CoinCompare API](https://min-api.cryptocompare.com/)
+- [CoinPaprika API](https://api.coinpaprika.com/)
+
+This is improved version of [this project](https://github.com/yshvchnk/Go-Docker-BitcoinApiService)

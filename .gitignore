@@ -4,3 +4,4 @@ config.yml
 *.drawio
 *.drawio.bkp
 .idea
+.env
